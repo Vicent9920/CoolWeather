@@ -1,0 +1,9 @@
+<litepal>
+    <dbname value="citys"/>
+    <version value="1"/>
+    <list>
+        <mapping class="cn.com.vicent.coolweather.db.Province"/>
+        <mapping class="cn.com.vicent.coolweather.db.City"/>
+        <mapping class="cn.com.vicent.coolweather.db.County"/>
+    </list>
+</litepal>

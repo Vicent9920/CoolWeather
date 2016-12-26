@@ -12,12 +12,26 @@
         android:textColor="#fff"
         android:textSize="60sp"/>
 
-    <TextView
-        android:id="@+id/info_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:textColor="#fff"
-        android:textSize="20sp"/>
+   <RelativeLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerHorizontal="true"
+       android:layout_gravity="end">
+       <TextView
+           android:id="@+id/info_text"
+           android:layout_width="wrap_content"
+           android:layout_height="32dp"
+           android:textColor="#fff"
+           android:textSize="20sp"
+           android:gravity="center"/>
+
+       <ImageView
+           android:id="@+id/wearher_code"
+           android:layout_width="32dp"
+           android:layout_height="32dp"
+           android:layout_marginLeft="10dp"
+           android:layout_toRightOf="@id/info_text"
+           android:src="@mipmap/weathercode100"/>
+   </RelativeLayout>
 
 </LinearLayout>

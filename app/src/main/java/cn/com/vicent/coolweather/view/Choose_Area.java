@@ -93,7 +93,9 @@ public class Choose_Area extends Fragment{
                         WeatherActivity activity = (WeatherActivity) getActivity();
                         activity.drawerLayout.closeDrawers();
                         activity.swLayout.setRefreshing(true);
-                        activity.requestWeather(weatherId);
+                        activity.titleUpdateTime.setVisibility(View.VISIBLE);
+                        activity.weatherId = weatherId;
+                        activity.requestWeather();
 
                     }
 
@@ -172,15 +174,17 @@ public class Choose_Area extends Fragment{
     }
 
     private void queryFromSever(String adress, final int level) {
+        Log.d(TAG, "queryFromSever: "+adress);
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(adress, new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(Call call, final IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         closeProgressDialog();
                         Toast.makeText(getContext(),"加载失败！",Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
                 });
             }
@@ -197,7 +201,6 @@ public class Choose_Area extends Fragment{
 
                     result = Utility.handleCityResponse(responseText,selectedProvince.getId());
                 }else if(LEVEL_COUNTY==level){
-                    Log.d(TAG, "onResponse: "+level);
                     result = Utility.handleCountyResponse(responseText,selectedCity.getId());
                 }
                 if(result){

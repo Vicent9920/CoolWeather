@@ -11,8 +11,16 @@ public class Now {
     public String tmp;
     @SerializedName("cond")
     public Cond cond;
+    public String hum;
+    public String vis;
+    public Wind wind;
+    public class Wind{
+        public String dir;
+        public String sc;
+    }
     public class Cond{
         @SerializedName("txt")
         public String text;
+        public String code;
     }
 }

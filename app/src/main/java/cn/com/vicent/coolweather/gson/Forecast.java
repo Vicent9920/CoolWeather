@@ -16,6 +16,7 @@ public class Forecast {
     public class Cond{
         @SerializedName("txt_d")
         public String text_d;
+        public String code_d;
     }
     public class Tmp{
 //        @SerializedName("max")

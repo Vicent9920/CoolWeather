@@ -11,5 +11,6 @@ public class Aqi {
         public String aqi;
 //        @SerializedName("pm25")
         public String pm25;
+        public String qlty;
     }
 }

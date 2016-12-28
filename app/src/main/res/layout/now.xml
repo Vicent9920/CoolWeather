@@ -30,8 +30,7 @@
            android:layout_width="32dp"
            android:layout_height="32dp"
            android:layout_marginLeft="10dp"
-           android:layout_toRightOf="@id/info_text"
-           android:src="@mipmap/weathercode100"/>
+           android:layout_toRightOf="@id/info_text"/>
    </RelativeLayout>
 
 </LinearLayout>

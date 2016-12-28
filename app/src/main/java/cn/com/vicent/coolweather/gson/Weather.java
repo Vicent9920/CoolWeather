@@ -2,13 +2,14 @@ package cn.com.vicent.coolweather.gson;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Vicent on 2016/12/25.
  */
 
-public class Weather {
+public class Weather implements Serializable{
     @SerializedName("status")
     public String status;
     public Basic basic;

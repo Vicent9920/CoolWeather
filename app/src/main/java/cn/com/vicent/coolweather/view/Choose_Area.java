@@ -2,7 +2,9 @@ package cn.com.vicent.coolweather.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,7 +26,7 @@ import java.util.List;
 
 import cn.com.vicent.coolweather.MainActivity;
 import cn.com.vicent.coolweather.R;
-import cn.com.vicent.coolweather.WeatherActivity;
+import cn.com.vicent.coolweather.WeatherActivity2;
 import cn.com.vicent.coolweather.db.City;
 import cn.com.vicent.coolweather.db.County;
 import cn.com.vicent.coolweather.db.Province;
@@ -33,6 +35,8 @@ import cn.com.vicent.coolweather.util.Utility;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static android.R.attr.id;
 
 /**
  * 选择城市的Fragment
@@ -57,6 +61,7 @@ public class Choose_Area extends Fragment{
     private Province selectedProvince;
     private City selectedCity;
     private int currentLevel;
+    private SharedPreferences prefs;
 
     @Nullable
     @Override
@@ -73,6 +78,7 @@ public class Choose_Area extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -83,20 +89,20 @@ public class Choose_Area extends Fragment{
                     selectedCity = cityList.get(i);
                     queryCounties();
                 }else if(currentLevel==LEVEL_COUNTY){
+                    Log.d(TAG, "onItemClick: "+id);
                     String weatherId = countyList.get(i).getCountyId();
                     if(getActivity() instanceof MainActivity){
-                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                        intent.putExtra(WeatherActivity.WEATHER_ID,weatherId);
+                        Log.d(TAG, "onItemClick: MainActivity");
+                        saveWeatherId(weatherId);
+                        Intent intent = new Intent(getActivity(), WeatherActivity2.class);
                         startActivity(intent);
                         getActivity().finish();
-                    }else if(getActivity() instanceof WeatherActivity){
-                        WeatherActivity activity = (WeatherActivity) getActivity();
-                        activity.drawerLayout.closeDrawers();
-                        activity.swLayout.setRefreshing(true);
-                        activity.titleUpdateTime.setVisibility(View.VISIBLE);
-                        activity.weatherId = weatherId;
-                        activity.requestWeather();
+                    }else if(getActivity() instanceof WeatherActivity2){
 
+                        WeatherActivity2 activity = (WeatherActivity2) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        boolean isSave = getWeatherIdIsSave(weatherId);
+                        activity.openActivity(weatherId,!isSave);
                     }
 
                 }
@@ -114,6 +120,47 @@ public class Choose_Area extends Fragment{
         });
         queryProvinces();
     }
+
+    /**
+     * 查询点击的城市是否已经添加
+     * @return
+     */
+    private boolean getWeatherIdIsSave(String id) {
+        int size = prefs.getInt("id_size",0);
+        boolean result = false;
+        if(size<=0){
+            return  false;
+        }else{
+            for (int i = 0; i < size; i++) {
+                String weatherId = prefs.getString(i+"",null);
+                //已添加该城市
+                if(weatherId!=null && id.equals(weatherId)){
+                   result = true;
+                }
+            }
+            //未添加该城市需保存
+            if(!result){
+                saveWeatherId(id);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 保存WeatherId
+     */
+    private void saveWeatherId(String id) {
+
+        SharedPreferences.Editor editor = prefs.edit();
+        int size = prefs.getInt("id_size",0);
+
+        if(size>=0){
+            editor.putInt("id_size",size+1);
+            editor.putString(size+"",id);
+            editor.commit();
+        }
+    }
+
     private void queryProvinces() {
         titleText.setText("中国");
         backButton.setVisibility(View.GONE);
